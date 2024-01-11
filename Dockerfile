@@ -17,11 +17,13 @@ RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pk
     rm -rf /var/lib/apt/lists/*
 
 # Create Workspace
-RUN mkdir -p ~/ros_ws/src
+RUN mkdir -p /ros2_ws/src
 WORKDIR /ros2_ws
 
-RUN git clone https://github.com/Yun-Zou/ElementalRobotics ./src/robot_node
+RUN git clone https://github.com/Yun-Zou/ElementRobotics ./src/robot_node
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # RUN git clone https://github.com/ros-planning/navigation2.git --branch $ROS_DISTRO ./src/navigation2 && \
 #     rosdep install -y \
