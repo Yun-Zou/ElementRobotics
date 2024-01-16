@@ -18,6 +18,7 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 from launch.actions import (
     DeclareLaunchArgument,
     GroupAction,
@@ -25,13 +26,15 @@ from launch.actions import (
     SetEnvironmentVariable,
 )
 
-
 def generate_launch_description():
     
     turtlebot3_dir  = get_package_share_directory('turtlebot3_gazebo')
     bringup_dir     = get_package_share_directory('nav2_bringup')
     slamtoolbox_dir = get_package_share_directory('slam_toolbox')
     launch_dir = os.path.join(bringup_dir, 'launch')
+
+    slam = LaunchConfiguration('slam')
+    headless = LaunchConfiguration('headless')
 
     # Specify the actions
     bringup_cmd_group = GroupAction(
@@ -56,15 +59,23 @@ def generate_launch_description():
                     os.path.join(bringup_dir, 'launch', 'tb3_simulation_launch.py')
                 ),
                 launch_arguments={
-                    'slam': 'true',
-                    'headless': 'false',
+                    'slam' : slam,
+                    'headless' : headless,
                 }.items(),
             ),
         ]
     )
 
     # Create the launch description and populate
-    ld = LaunchDescription()
+    ld = LaunchDescription([
+        DeclareLaunchArgument(
+            name= 'slam', default_value='True',
+            description='use slam or now'),
+
+        DeclareLaunchArgument(
+            name='headless', default_value='False',
+            description=''),
+    ])
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(bringup_cmd_group)
