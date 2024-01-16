@@ -20,43 +20,16 @@ RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pk
 RUN mkdir -p /ros2_ws/src
 WORKDIR /ros2_ws
 
-RUN git clone https://github.com/Yun-Zou/ElementRobotics ./src/robot_node
+RUN git clone https://github.com/Yun-Zou/ElementRobotics ./src/robot_node && cd src && colcon build
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Change default shell to Bash
+SHELL [ "/bin/bash", "-l", "-c" ]
+RUN echo "source /ros2_ws/src/install/setup.bash" >> /root/.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
+RUN echo "export TURTLEBOT3_MODEL=waffle" >> /root/.bashrc
+RUN echo "export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> /root/.bashrc
 
-# RUN git clone https://github.com/ros-planning/navigation2.git --branch $ROS_DISTRO ./src/navigation2 && \
-#     rosdep install -y \
-#     --from-paths ./src \
-#     --ignore-src && \
-#     colcon build \
-#     --symlink-install
-# # Install everything needed
-# RUN apt-get update --fix-missing && \
-#     apt upgrade -y && \
-#     apt-get install -y \
-#     ros-dev-tools && \
-#     # Clone source
-#     git clone -b $ROS_DISTRO https://github.com/ros-planning/navigation2.git
-
-# # Install dependencies
-# RUN rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
-#     rosdep init && \
-#     rosdep update --rosdistro $ROS_DISTRO && \
-#     rosdep install -i --from-path src --rosdistro $ROS_DISTRO -y &&
-
-# Build
-# RUN colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
-#     apt install -y \
-#     ros-$ROS_DISTRO-navigation2 \
-#     ros-$ROS_DISTRO-nav2-bringup && \
-#     # Save version
-#     echo $(dpkg -s ros-$ROS_DISTRO-navigation2 | grep 'Version' | sed -r 's/Version:\s([0-9]+.[0-9]+.[0-9]+).*/\1/g') > /version.txt && \
-#     # Size optimalization
-#     rm -rf build log src && \
-#     export SUDO_FORCE_REMOVE=yes && \
-#     apt-get remove -y \
-#     ros-dev-tools && \
-#     apt-get autoremove -y && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/*
+COPY launchNav.sh /launchNav.sh
+COPY launchWorld.sh /launchWorld.sh
+RUN chmod +x /launchWorld.sh
+RUN chmod +x /launchNav.sh
