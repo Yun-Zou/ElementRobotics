@@ -56,8 +56,8 @@ def generate_launch_description():
                     os.path.join(bringup_dir, 'launch', 'tb3_simulation_launch.py')
                 ),
                 launch_arguments={
-                    'slam': True,
-                    'headless': False,
+                    'slam': 'true',
+                    'headless': 'false',
                 }.items(),
             ),
         ]
