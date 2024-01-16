@@ -3,8 +3,8 @@
 ## How to Run
 1. Pull this repo to your local computer
 2. `docker build -t element-robotics .`
-3. `./start.sh`
-5. `./shutdown.sh` Once you're done
+3. `./start.sh` To start the container and load the world
+4. `.run.sh` To start the navigation inputs
 
 # For development
 Run the start_development.sh script which will mount the volume instead

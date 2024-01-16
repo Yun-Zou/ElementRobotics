@@ -57,6 +57,7 @@ def generate_launch_description():
                 ),
                 launch_arguments={
                     'slam': True,
+                    'headless': False,
                 }.items(),
             ),
         ]
